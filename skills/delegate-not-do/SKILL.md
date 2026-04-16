@@ -77,6 +77,7 @@ description: >-
 
 ## 铁律
 
+0. **Heartbeat 巡检 → spawn subagent** — heartbeat 触发时 spawn subagent 执行巡检是正确做法。主 session 不直接巡检，但要确保 subagent 被 spawn 出去。
 1. **人类消息 > 一切任务** — 收到人类消息立刻响应，不要因为 subagent 在跑就不理人
 2. **主 session 不阻塞** — spawn 完 subagent 就继续待命，不要同步等
 3. **干活 → spawn** — 沟通协调以外的事都不是你的活
