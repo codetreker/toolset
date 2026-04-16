@@ -37,7 +37,7 @@ Include `MEDIA:<filepath>` in your reply to send the generated image. File must 
 Example:
 ```
 Here's your image!
-MEDIA:/home/jianjun/.openclaw/workspace/imagegen-20260408-084900.png
+MEDIA:~/.openclaw/workspace/imagegen-20260408-084900.png
 ```
 
 ## Defaults

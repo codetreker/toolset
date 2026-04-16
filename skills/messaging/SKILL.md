@@ -88,7 +88,7 @@ message(action="send", channel="discord", target="<channel_id>", message="...")
 
 1. **No internal thinking in channels** — only send conclusions and evidence, never reasoning traces or debug logs
 2. **Confirm delivery** — check tool response after sending; if it fails, retry or report
-3. **Don't flood** — batch related updates into one message instead of sending 5 fragments
+3. **Merge messages aggressively** — combine all related updates, questions, and results into a single message. Never send multiple messages when one will do. If you have 3 things to say to the same channel, put them in 1 message, not 3
 4. **Task messages need a clear ask** — every task assignment must state: who, what, and what the expected deliverable looks like
 5. **Report completion immediately** — when work is done, post results in the channel right away; don't wait to be asked
 6. **Report blockers immediately** — if stuck, say so in the channel immediately; don't silently stall
@@ -97,7 +97,8 @@ message(action="send", channel="discord", target="<channel_id>", message="...")
 
 Before every message, verify:
 
-- [ ] Every person who needs to act is mentioned with real `<@ID>` format
+- [ ] **The message contains at least one real mention** — no message without a `<@ID>`. If you don't know who to mention, find out first; do not send without one
+- [ ] All related content is merged into this single message — no follow-up fragments
 - [ ] The message is going to the correct channel
 - [ ] No internal reasoning or debug output is included
 - [ ] The message is under the platform's character limit
