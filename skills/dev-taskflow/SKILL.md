@@ -133,7 +133,7 @@ Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...H
 2. `gh pr create` 开 PR（body 包含 spec 链接 + task breakdown 链接）
 3. 在项目频道 @ 架构师请求 review
 4. 盯 CI 直到绿灯
-5. 等架构师 + 建军 approve
+5. 等架构师 approve
 
 ## 执行要点
 
