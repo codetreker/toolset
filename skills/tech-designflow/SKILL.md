@@ -135,10 +135,11 @@ description: 技术设计文档流程。覆盖：调研（多 Claude Code 并行
 
 ### Review 流程
 
-1. **派 2 个 Reviewer 并行 review**：
-   - Reviewer A：Claude Code（侧重技术正确性、边界条件、一致性）
-   - Reviewer B：Copilot 或另一个 Claude Code（侧重架构合理性、可维护性、遗漏）
-2. **收集 review 意见**
+1. **派 2 个 Reviewer 并行 review**（用 `exec background:true` 直接在主 session 里跑 Claude Code）：
+   - Reviewer A：`exec background:true command:"cd <project> && claude --permission-mode bypassPermissions --print '<review prompt A>'"`
+   - Reviewer B：`exec background:true command:"cd <project> && claude --permission-mode bypassPermissions --print '<review prompt B>'"`
+   - 用 `process poll` 等结果，两个并行不阻塞
+2. **收集 review 意见**（`process log` 读取输出）
 3. **按严重度分级**（见下方）
 4. **修订文档**
 5. **如有 P0 修改，进入下一轮 review**
