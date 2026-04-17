@@ -1,6 +1,6 @@
 ---
 name: task-dispatch
-description: 派 subagent 执行非 trivial 任务时的标准流程：先调研拿方案，review 后再执行。触发场景：需要 subagent 创建频道、修改配置、修复环境、写代码等非 trivial 操作时。不适用于：只是读文件查信息、简单改一个文件等 trivial 操作。
+description: 派 subagent 执行非 trivial 任务时的标准流程：先调研拿方案，review 后再执行。当人类说「我要 review」时，设计阶段推到 ready-for-review 仓库并给 doc 链接，PR 阶段直接给 PR 链接。触发场景：需要 subagent 创建频道、修改配置、修复环境、写代码等非 trivial 操作时。不适用于：只是读文件查信息、简单改一个文件等 trivial 操作。
 ---
 
 # Task Dispatch
@@ -75,6 +75,13 @@ description: 派 subagent 执行非 trivial 任务时的标准流程：先调研
    - 批准 → 将状态改为 `已批准`，进入 Phase 3
    - 调整 → 直接修改 task 文件，标注调整理由
    - 打回 → 将状态改为 `打回`，附打回原因，重新进入 Phase 1
+
+#### 当人类说「我要 review」时
+
+根据当前阶段提供不同的 review 入口：
+
+- **设计阶段**（调研方案待审）→ 把 task 文件 / 设计文档推到 `ready-for-review` 仓库，给人类 **GitHub 文件链接**（如 `https://github.com/codetreker/ready-for-review/blob/main/{目录}/{文件}`），方便在 GitHub 上直接阅读和评论
+- **PR 阶段**（代码已提交待审）→ 直接给 **PR 链接**（如 `https://github.com/codetreker/{repo}/pull/{number}`）
 
 ### Phase 3: 执行
 
