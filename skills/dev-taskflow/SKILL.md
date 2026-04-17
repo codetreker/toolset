@@ -49,25 +49,13 @@ Claude Code 和 Copilot **并行** review task list，聚焦：
 - 依赖顺序是否正确
 - 是否有技术风险未标注
 
-**并行启动两个 review：**
+**并行启动两个 review（用 exec background 模式，不是 shell &）：**
 
-```bash
-# Review 1: Claude Code
-cd <project-dir> && claude --permission-mode bypassPermissions --print "
-Review <task-breakdown.md>，对照 <spec-path>。
-聚焦：遗漏需求、粒度、依赖、技术风险。
-只输出需要修改的 CRITICAL/HIGH 问题，不要废话。
-输出到 <output-path>/review-cc-round1.md
-" &
+主 session 分别 spawn 两个 `exec background:true` 命令：
+- Review 1: Claude Code（`claude --permission-mode bypassPermissions --print "..."`)  
+- Review 2: Copilot（`copilot -p "..."`）
 
-# Review 2: Copilot
-cd <project-dir> && copilot -p "
-Review <task-breakdown.md>，对照 <spec-path>。
-聚焦：遗漏需求、粒度、依赖、技术风险。
-只输出需要修改的 CRITICAL/HIGH 问题，不要废话。
-输出到 <output-path>/review-copilot-round1.md
-" &
-```
+两个各自拿到 sessionId，用 `process poll` 等结果。
 
 **修复 → 再 review → 最多 3 轮：**
 1. 收集两份 review 的 CRITICAL/HIGH 问题
@@ -102,24 +90,12 @@ cd <project-dir> && claude --permission-mode bypassPermissions --print "
 
 编码完成后，并行跑两个 code review，聚焦 **spec 一致性**：
 
-```bash
-# Review 1: Claude Code
-cd <project-dir> && claude --permission-mode bypassPermissions --print "
-Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...HEAD）。
-聚焦：
-1. spec 中的每个需求是否都实现了
-2. 实现是否偏离 spec（多做了或少做了）
-3. 边界条件和错误处理是否符合 spec
-只输出 CRITICAL/HIGH 问题。
-" &
+**并行启动两个 code review（同样用 exec background）：**
 
-# Review 2: Copilot
-cd <project-dir> && copilot -p "
-Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...HEAD）。
-聚焦：spec 一致性、遗漏实现、偏离设计。
-只输出 CRITICAL/HIGH 问题。
-" &
-```
+- Review 1: Claude Code — 对比 spec 和 `git diff origin/main...HEAD`
+- Review 2: Copilot — 同样对比
+
+聚焦：spec 一致性、遗漏实现、偏离设计。只输出 CRITICAL/HIGH 问题。
 
 **修复 CRITICAL 问题后重跑 review（最多 1 轮）。**
 
