@@ -1,10 +1,41 @@
 ---
 name: delegate-not-do
 description: >-
-  Decide whether to delegate work to a subagent instead of doing it in the main session. Use when: (1) processing user messages or channel events that involve non-trivial execution, (2) multi-file reads or analysis, (3) ops tasks (deploy, config changes, restarts), (4) code/config modifications needing build/test verification, (5) log analysis, (6) long-running commands (compile, test, git ops), (7) research tasks of any complexity. NOT for: simple single-file reads, one-shot quick answers, trivial edits under 5 lines, or pure conversational replies.
+  Low-priority execution guide: decides HOW to execute a task (spawn subagent vs do inline),
+  not WHAT to do. Activates only when no other skill claims the task.
+  If a specialized skill applies (coding-agent for code tasks, task-dispatch for
+  non-trivial ops, tech-designflow for design docs, etc.), follow that skill instead.
+  This skill covers the residual: generic delegation decisions and subagent spawning mechanics.
+  NOT for: simple single-file reads, one-shot quick answers, trivial edits under 5 lines,
+  or pure conversational replies.
 ---
 
 # 委派，不要亲自干
+
+## ⚠️ 优先级：本 skill 是兜底
+
+**本 skill 的优先级低于所有其他 skill。** 它只在没有更专业的 skill 适用时才激活。
+
+### 路由规则（先检查这些，再回到本 skill）
+
+| 任务类型 | 应该用的 skill | 本 skill 的角色 |
+|---------|--------------|---------------|
+| 写代码、review PR、重构 | `coding-agent` | 不介入——coding-agent 自己管 spawn 方式 |
+| 架构设计、方案调研、技术选型 | `tech-designflow` | 不介入 |
+| 非 trivial 有副作用操作（改配置、建频道、部署等） | `task-dispatch`（调研→Review→执行） | 不介入——task-dispatch 自己管 subagent 流程 |
+| Code Review | `code-review` | 不介入 |
+| 项目启动/归档 | `project-init` | 不介入 |
+| 以上都不匹配的非 trivial 执行任务 | **本 skill** | 指导怎么 spawn subagent |
+
+### 本 skill 的角色定义
+
+本 skill **只管执行方式**（spawn subagent vs 自己做），**不管任务内容**：
+
+- ✅ 判断一个任务应该 spawn 还是自己做
+- ✅ 指导 subagent 的派工质量（目标、验收标准、约束）
+- ✅ 指导 subagent 结果处理（转达、修正、重试）
+- ❌ 不决定用什么工具/流程完成任务（那是其他 skill 的事）
+- ❌ 不替代 coding-agent、task-dispatch 等 skill 的工作流
 
 ## 核心原则
 
@@ -32,6 +63,9 @@ description: >-
 | | 任何预计 > 1 分钟的操作 |
 
 **犹豫 = spawn。** 犹豫本身说明任务不够轻量。
+
+> **注意**：上表只判断"spawn 还是自己做"。具体用什么工具/流程，看路由规则表。
+> 比如"写代码"确实要 spawn，但 spawn 的方式由 `coding-agent` skill 决定，不是本 skill。
 
 ## 借口粉碎机
 
