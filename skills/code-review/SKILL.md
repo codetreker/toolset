@@ -59,8 +59,8 @@ description: Code Review 标准流程。用 Claude Code（exec background）做 
 
 Review 结果按严重程度分级：
 
-- **P0 (Must Fix)** — 正确性问题、数据丢失风险、安全漏洞
-- **P1 (Should Fix)** — 性能问题、错误处理缺失、设计偏离
+- **P0 (Critical)** — 正确性问题、数据丢失风险、安全漏洞
+- **P1 (Must Fix)** — 性能问题、错误处理缺失、设计偏离。**P1 也必须修复才能合入。**
 - **P2 (Nice to Have)** — 代码风格、命名建议、文档改进
 
 每个问题格式：
