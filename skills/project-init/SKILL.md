@@ -1,7 +1,7 @@
 ---
 name: project-init
 description: >
-  项目启动、归档与交接。覆盖：新项目初始化（创建频道→注册→项目 memory→仓库 docs/→任务板→TRACKER 登记→HEARTBEAT 清单）、
+  项目启动、归档与交接。覆盖：新项目初始化（创建频道→注册→项目 memory→仓库 docs/→任务板→TRACKER 登记→CHANNEL_PATROL 登记）、
   项目归档流程、开发交接清单。
   支持两种任务板：GitHub Project Board 和文件 BOARD.md，初始化时自动检测或询问用户选择。
   模板见 references/templates.md。
@@ -14,7 +14,7 @@ description: >
 
 ## 新项目启动
 
-流程：`讨论阶段(可选) → 确定项目 → 创建频道 → 注册频道 → 初始化仓库 docs/ → 设置任务板 → 登记 TRACKER → 更新 HEARTBEAT`
+流程：`讨论阶段(可选) → 确定项目 → 创建频道 → 注册频道 → 初始化仓库 docs/ → 设置任务板 → 登记 TRACKER → 更新 CHANNEL_PATROL`
 
 ### 讨论阶段（_drafts）
 
@@ -28,17 +28,28 @@ description: >
 
 ### 正式启动
 
-1. **创建项目频道**：`#project-{项目名}`（小写、短横线），必须 private，**必须放到 `projects` 分类下**（分类 ID：`1493140163042349157`）
+1. **创建项目频道**：`#project-{项目名}`（小写、短横线），**必须放到 `projects` 分类下**（分类 ID：`1493140163042349157`）
+
+   **⚠️ 必须设为 Private**：`channel-create` 不支持 permission 参数，创建出来的频道默认是 public。创建后**立刻**手动设置权限：
+   - 在 Discord 频道设置 → 权限 → 开启「私密频道」
+   - 或通过 Discord REST API 设置 @everyone deny VIEW_CHANNEL：
+     ```
+     PUT /channels/{channelId}/permissions/{guildId}
+     Body: {"deny": "1024", "type": 0}
+     ```
+   - 确认方式：用 `message(action=channel-info, channelId=xxx)` 检查 `permission_overwrites` 中 @everyone (id=guildId) 的 `deny` 包含 `1024`
+   - **不要跳过这步**——没设 private 的项目频道 = 安全漏洞
 2. **注册到频道表**：创建后立刻注册到 `oc-shared/TEAM-DIRECTORY.md`，不要等
 3. **初始化仓库 docs/**：`docs/tasks/` 目录
    - 任务相关文档（设计、决策、review）放 `docs/tasks/{TASK-ID}/`，如 `docs/tasks/RFR-001/design.md`
 4. **设置任务板**：见下方「任务板初始化」
 5. **登记 TRACKER.md**：添加项目条目
-6. **更新 HEARTBEAT.md**：在 `## 活跃项目清单` 表格末尾追加项目行：
+6. **更新 CHANNEL_PATROL.md**：在 `## 活跃项目清单` 表格末尾追加项目行：
    ```
-   | {项目名} | {频道ID} | /workspace/{项目名}/docs/tasks/BOARD.md | memory/projects/{项目名}/README.md | agent:main:discord:channel:{频道ID} |
+   | {项目名} | {频道ID} | agent:main:discord:channel:{频道ID} |
    ```
-   操作方式：read HEARTBEAT.md → 在 `<!-- 由 project-init 自动维护 -->` 注释下的 markdown table 末尾插入新行 → write 回去。
+   操作方式：read CHANNEL_PATROL.md → 在 `<!-- 由 project-init 自动维护 -->` 注释下的 markdown table 末尾插入新行 → write 回去。
+   归档时同步从此表删除。
 
 所有模板见 `references/templates.md`。
 
@@ -114,7 +125,7 @@ gh project item-list <PROJECT_NUMBER> --owner codetreker --format json
 ## 项目归档
 
 1. 频道注册表状态改 `archived`
-2. **更新 HEARTBEAT.md**：从 `## 活跃项目清单` 表格中删除对应项目行
+2. **更新 CHANNEL_PATROL.md**：从 `## 活跃项目清单` 表格中删除对应项目行
 3. 归档频道（不删——可能需要回查）
 4. 项目 memory 保留，README.md 标注归档时间和原因
 5. 任务板确认所有任务状态正确
