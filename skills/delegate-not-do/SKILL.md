@@ -1,17 +1,7 @@
 ---
 name: delegate-not-do
 description: >-
-  主 session 是指挥台不是工位。在处理用户消息或者Channel事件时，先加载这个skill, 决定耗时操作是否委派给 subagent。
-  在任何情况下如果需要做如下操作都应该 spawn subagent 去做，而不是自己干：
-   * 读多个文件分析
-   * 运维操作 - 比如: 部署服务,改配置，重启服务等
-   * 写代码改配置 - 任何大量修改或者需要编译测试验证的改动
-   * 分析日志 - 需要读很多日志文件或者分析复杂日志的
-   * 任何长命令 - 包括但不限于编译、测试、git 操作
-   * 复杂排查调研 - 需要读很多文档、搜索、分析的调研
-   * 跑长命令 - 编译、测试、git 操作
-   * 复杂排查调研 - 需要读很多文档、搜索、分析的调研
-   * 调研任务 - 无论多么简单
+  Decide whether to delegate work to a subagent instead of doing it in the main session. Use when: (1) processing user messages or channel events that involve non-trivial execution, (2) multi-file reads or analysis, (3) ops tasks (deploy, config changes, restarts), (4) code/config modifications needing build/test verification, (5) log analysis, (6) long-running commands (compile, test, git ops), (7) research tasks of any complexity. NOT for: simple single-file reads, one-shot quick answers, trivial edits under 5 lines, or pure conversational replies.
 ---
 
 # 委派，不要亲自干
