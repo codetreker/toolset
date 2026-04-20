@@ -137,9 +137,9 @@ description: 技术设计文档流程。覆盖：调研（多 Claude Code 并行
 
 1. **派 2 个 Reviewer 并行 review**（CC + Codex，用 `exec background:true`）：
    - Reviewer A（Claude Code）：`exec background:true command:"cd <project> && claude --permission-mode bypassPermissions --print '<review prompt A>'"`
-   - Reviewer B（Codex）：`exec background:true pty:true command:"cd <project> && codex --full-auto '<review prompt B>'"`
+   - Reviewer B（Codex）：`exec background:true command:"cd <project> && codex --yolo exec '<review prompt，结尾加：把 review 结果写到 /tmp/review-result.md>'"`，完成后 `read /tmp/review-result.md` 读取结果
    - 用 `process poll` 等结果，两个并行不阻塞
-   - 注意：Codex 需要 `pty:true`，Claude Code 不需要
+   - 注意：Codex 用 `codex --yolo exec` 非交互模式（跳过沙箱），不需要 pty；Claude Code 用 `--print` 纯文本输出
 2. **收集 review 意见**（`process log` 读取输出）
 3. **按严重度分级**（见下方）
 4. **修订文档**
