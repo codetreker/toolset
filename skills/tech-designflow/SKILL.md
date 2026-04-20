@@ -72,6 +72,8 @@ description: 技术设计文档流程。覆盖：调研（多 Claude Code 并行
 
 基于调研结论，产出完整的技术设计文档。
 
+**写设计文档必须用 Claude Code**（`claude --print` 或交互模式），不要用 subagent。原因：设计文档需要读大量现有代码才能写出对得上行号的方案，subagent 没有文件读写能力。
+
 ### 设计文档结构
 
 ```markdown
