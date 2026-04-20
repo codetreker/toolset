@@ -5,8 +5,8 @@ description: >-
   触发场景：收到设计文档/spec 后需要实现编码、收到飞马派的开发任务、
   需要按标准流程开发并提交 PR。
   不适用于 bug 修复（用 bugfix-taskflow）。
-  流程：spec → task breakdown(CC) → parallel review(CC+Copilot, max 3轮)
-  → execute(CC team mode) → code review(CC+Copilot vs spec) → 提交架构 review。
+  流程：spec → task breakdown(CC) → parallel review(CC+Codex, max 3轮)
+  → execute(CC team mode) → code review(CC+Codex vs spec) → 提交架构 review。
 ---
 
 # Dev TaskFlow — 从 Spec 到代码交付
@@ -15,14 +15,14 @@ description: >-
 
 ```
 Spec 文档 → [1] Task Breakdown → [2] Parallel Review → [3] Execute → [4] Code Review → [5] 提交 Review
-              (Claude Code)      (CC + Copilot ×3轮)  (CC team)    (CC + Copilot)     (架构师)
+              (Claude Code)      (CC + Codex ×3轮)  (CC team)    (CC + Codex)     (架构师)
 ```
 
 ## 前置条件
 
 - 有明确的 spec/设计文档（路径或内容）
 - 明确目标仓库和分支
-- Claude Code 和 Copilot CLI 可用
+- Claude Code 和 Codex CLI 可用
 
 ## Step 1: Task Breakdown
 
@@ -44,7 +44,7 @@ cd <project-dir> && claude --permission-mode bypassPermissions --print "
 
 ## Step 2: Parallel Review（最多 3 轮）
 
-Claude Code 和 Copilot **并行** review task list，聚焦：
+Claude Code 和 Codex **并行** review task list，聚焦：
 - 是否遗漏了 spec 中的需求
 - task 粒度是否合适（太大拆分，太小合并）
 - 依赖顺序是否正确
@@ -61,12 +61,12 @@ Review <task-breakdown.md>，对照 <spec-path>。
 输出到 <output-path>/review-cc-round1.md
 "
 
-# Review 2: Copilot（同时启动）
-cd <project-dir> && copilot -p "
+# Review 2: Codex（同时启动）
+cd <project-dir> && codex --yolo exec "
 Review <task-breakdown.md>，对照 <spec-path>。
 聚焦：遗漏需求、粒度、依赖、技术风险。
 只输出需要修改的 CRITICAL/HIGH 问题，不要废话。
-输出到 <output-path>/review-copilot-round1.md
+输出到 <output-path>/review-codex-round1.md
 "
 ```
 
@@ -99,7 +99,7 @@ cd <project-dir> && claude --permission-mode bypassPermissions --print "
 
 **验收标准：** 所有 task 完成，测试通过，代码已 commit。
 
-## Step 4: Code Review（CC + Copilot vs Spec）
+## Step 4: Code Review（CC + Codex vs Spec）
 
 编码完成后，并行跑两个 code review，聚焦 **spec 一致性**：
 
@@ -114,8 +114,8 @@ Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...H
 只输出 CRITICAL/HIGH 问题。
 "
 
-# Review 2: Copilot（同时启动）
-cd <project-dir> && copilot -p "
+# Review 2: Codex（同时启动）
+cd <project-dir> && codex --yolo exec "
 Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...HEAD）。
 聚焦：spec 一致性、遗漏实现、偏离设计。
 只输出 CRITICAL/HIGH 问题。
@@ -141,4 +141,4 @@ Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...H
 - **主 session 只做调度**，不自己写代码（delegate-not-do）
 - **每步完成后在频道汇报进度**
 - **遇到 OOM/超时**：加大内存/timeout 重试，不要放弃
-- **Copilot 用 `-p` 非交互模式**
+- **Codex 用 `-p` 非交互模式**
