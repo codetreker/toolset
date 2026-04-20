@@ -135,10 +135,11 @@ description: 技术设计文档流程。覆盖：调研（多 Claude Code 并行
 
 ### Review 流程
 
-1. **派 2 个 Reviewer 并行 review**（用 `exec background:true` 直接在主 session 里跑 Claude Code）：
-   - Reviewer A：`exec background:true command:"cd <project> && claude --permission-mode bypassPermissions --print '<review prompt A>'"`
-   - Reviewer B：`exec background:true command:"cd <project> && claude --permission-mode bypassPermissions --print '<review prompt B>'"`
+1. **派 2 个 Reviewer 并行 review**（CC + Codex，用 `exec background:true`）：
+   - Reviewer A（Claude Code）：`exec background:true command:"cd <project> && claude --permission-mode bypassPermissions --print '<review prompt A>'"`
+   - Reviewer B（Codex）：`exec background:true pty:true command:"cd <project> && codex --full-auto '<review prompt B>'"`
    - 用 `process poll` 等结果，两个并行不阻塞
+   - 注意：Codex 需要 `pty:true`，Claude Code 不需要
 2. **收集 review 意见**（`process log` 读取输出）
 3. **按严重度分级**（见下方）
 4. **修订文档**
@@ -217,7 +218,8 @@ Review 要求：
 
 ## 反模式（不要做）
 
-- ❌ 调研只派 1 个 agent → 容易有盲区，至少 2-3 个并行
+- ❌ 调研只派 1 个 agent → 容易有盲区，至少 2 个并行
+- ❌ Review 只用一个工具 → CC + Codex 并行，不同模型视角互补
 - ❌ 跳过 review 直接提交审批 → review 是质量保证，不是形式
 - ❌ Review 超过 3 轮还在改 → 说明方案有根本问题，升级决策
 - ❌ 设计文档只在聊天里讨论不落文件 → 口头设计 = 没有设计

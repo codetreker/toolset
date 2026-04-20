@@ -1,9 +1,10 @@
 ---
 name: dev-taskflow
 description: >-
-  标准开发流程：从 spec 文档到代码交付的完整 pipeline。
+  标准功能开发流程：从 spec 文档到代码交付的完整 pipeline。
   触发场景：收到设计文档/spec 后需要实现编码、收到飞马派的开发任务、
   需要按标准流程开发并提交 PR。
+  不适用于 bug 修复（用 bugfix-taskflow）。
   流程：spec → task breakdown(CC) → parallel review(CC+Copilot, max 3轮)
   → execute(CC team mode) → code review(CC+Copilot vs spec) → 提交架构 review。
 ---
@@ -101,8 +102,6 @@ cd <project-dir> && claude --permission-mode bypassPermissions --print "
 ## Step 4: Code Review（CC + Copilot vs Spec）
 
 编码完成后，并行跑两个 code review，聚焦 **spec 一致性**：
-
-**并行启动两个 code review（同样用 `exec background:true`）：**
 
 ```bash
 # Review 1: Claude Code
