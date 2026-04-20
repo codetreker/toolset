@@ -9,6 +9,18 @@ description: >-
   → execute(CC team mode) → code review(CC+Codex vs spec) → 提交架构 review。
 ---
 
+## 工具选择（硬规则）
+
+**所有实际工作必须用 Claude Code 或 Codex，不用 subagent。**
+
+- **写代码**：Claude Code（ 或交互模式）或 Codex（）
+- **写文档**：Claude Code（需要读项目代码才能写出靠谱的文档）
+- **Code Review**：CC + Codex 并行（）
+- **分析/调研**：Claude Code
+
+Subagent 没有文件读写能力，不能直接操作项目代码，写出来的东西对不上实际代码。
+
+
 # Dev TaskFlow — 从 Spec 到代码交付
 
 ## 流程概览
