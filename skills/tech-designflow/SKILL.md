@@ -72,7 +72,27 @@ description: 技术设计文档流程。覆盖：调研（多 Claude Code 并行
 
 基于调研结论，产出完整的技术设计文档。
 
-**写设计文档必须用 Claude Code**（`claude --print` 或交互模式），不要用 subagent。原因：设计文档需要读大量现有代码才能写出对得上行号的方案，subagent 没有文件读写能力。
+**写设计文档必须用 Claude Code**，不要用 subagent。
+
+**CC 写文档的正确用法**：
+```bash
+# ✅ 正确：--print 输出 + shell 重定向写文件
+cd <project> && claude --permission-mode bypassPermissions --print "<prompt>" > docs/design/xxx.md
+
+# ✅ 正确：让 CC 读代码后生成文档（提示词里要求读哪些文件）
+cd <project> && claude --permission-mode bypassPermissions --print "读取 src/routes/*.ts，然后写设计文档" > docs/design/xxx.md
+
+# ❌ 错误：--print 模式不能写文件，它只输出到 stdout
+cd <project> && claude --permission-mode bypassPermissions --print "写到 docs/xxx.md"  # 文件不会被创建！
+
+# ❌ 错误：交互模式在非 TTY 环境挂死
+cd <project> && claude --permission-mode bypassPermissions "写文档"  # 无 --print，需要 TTY
+
+# ❌ 错误：subagent 没有文件读写能力
+sessions_spawn(task="写设计文档")  # 写不出文件
+```
+
+**关键点**：`--print` 只输出文本，不能写文件。要写文件必须用 shell 重定向 `> file.md`。
 
 ### 设计文档结构
 
