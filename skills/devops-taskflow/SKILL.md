@@ -76,6 +76,8 @@ description: >-
 
 ## 经验教训（2026-04-21）
 
+参考 `references/cicd-best-practices.md` 获取 CI/CD pipeline 完整方案和踩坑记录。
+
 - 边讨论边改代码 → 改了 12 个 PR 还没搞定 CI/CD
 - 本地 build Docker image → 磁盘撑满，建军手动清
 - Harbor 白装白拆 → 1.7GB 浪费
