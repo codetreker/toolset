@@ -28,14 +28,18 @@ Harbor (阿里云本机)                    镜像存储
    - `/etc/hosts`: `127.0.0.1 harbor.codetrek.cn`
    - docker pull 走本机 Caddy → Harbor，不走公网
 
-3. **Prod tag 用 Harbor API 而不是 pull+retag+push**
+3. **Prod tag 用 Harbor API（先删后建）**
    ```bash
+   # Harbor API 没有 override 选项（#20382），需要先删旧 tag
    curl -sf -u '<user>:<token>' \
-     -X POST 'https://harbor.codetrek.cn/api/v2.0/projects/library/repositories/<app>/artifacts/<build-tag>/tags' \
+     -X DELETE '.../artifacts/prod/tags/prod' || true
+   curl -sf -u '<user>:<token>' \
+     -X POST '.../artifacts/<build-tag>/tags' \
      -H 'Content-Type: application/json' \
      -d '{"name":"prod"}'
    ```
-   - 秒完成，不下载 200MB 镜像
+   - 不下载镜像，秒完成
+   - DELETE 忽略 404（首次没有旧 tag）
 
 4. **Compose 用完整 Harbor URL**
    ```yaml
