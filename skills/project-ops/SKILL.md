@@ -29,6 +29,27 @@ description: 项目操作手册,覆盖:项目 memory 组织与初始化、sessio
 - **所有任务必须有 Owner,无主任务不允许存在**
 - 任务完成、状态变更、子任务拆分--**第一时间更新任务板**,不是"回头再改"
 
+### BOARD.md 文件格式
+
+**一张表，状态列区分**（不分多个 section）：
+
+```markdown
+# {project} Task Board
+
+> **Owner** = 此刻球在谁手上，随状态流转变化。
+> Backlog/Ready→Team Lead，In Progress→Dev，In Review→Team Lead，验收→QA，Done→Team Lead。
+
+| ID | 任务 | 状态 | Owner | PR |
+|----|------|------|-------|----||
+| P1 | 权限系统 | Done | 飞马 | #4 |
+| P6 | Slash Commands | In Progress | 战马 | — |
+| BL-001 | E2E 加密 | Backlog | 飞马 | — |
+```
+
+**规则**：
+- Backlog 项也在这张表里，不单独建 BACKLOG.md
+- BOARD.md 是任务状态的唯一 SOT，不在其他地方维护看板副本
+
 ### 状态流转
 
 6 列看板:Backlog → Ready → In Progress → In Review → Done → Archive
