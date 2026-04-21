@@ -3,8 +3,7 @@ name: devops-taskflow
 description: >-
   DevOps 操作标准流程：部署、CI/CD、基础设施（Docker、DNS、反代、registry 等）。
   核心规则：规划 → 讨论 → 确认 → 执行，不跳步。
-  触发场景：部署到 staging/prod、配置 CI/CD pipeline、操作远程服务器、
-  Docker 镜像管理、DNS/反代/TLS 配置、registry 搭建等。
+  触发场景：部署到 staging/prod、配置 CI/CD pipeline、操作远程服务器、Docker 镜像管理、DNS/反代/TLS 配置、registry 搭建等。
   不适用于：写代码（用 dev-taskflow）、写设计文档（用 tech-designflow）。
 ---
 
@@ -37,6 +36,15 @@ description: >-
 - 建军可能有不同想法或追加需求
 - **讨论没结束不写代码、不改配置、不操作服务器**
 - 建军说"做"或"确认"才进 Step 3
+
+### Step 2.5: 形成执行文档
+
+**讨论确认后、执行前，必须把方案写成文档**：
+
+- 文档路径：项目 `docs/devops/` 或 workspace `memory/devops/`
+- 内容：确认后的最终方案（操作步骤、配置、回滚方案）
+- **subagent 通过读文档获取任务上下文**，不靠 task prompt 口头传递
+- 文档是 single source of truth——讨论中的口头修改必须同步到文档
 
 ### Step 3: 执行
 
