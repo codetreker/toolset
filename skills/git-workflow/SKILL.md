@@ -58,12 +58,17 @@ gh pr create --base main --head <branch-name> --title "..." --body "..."
 
 ### 4. PR 合并后清理
 
+**worktree 在 PR 合并后才删除**——开 PR 后可能还需要修改（review 反馈）。
+
 ```bash
+# PR 合并后才执行：
 cd /workspace/<project>
 git worktree remove .worktrees/<task-name>
 git branch -d <branch-name>
 git pull origin main
 ```
+
+**不要在 push + 开 PR 后就删 worktree**——review 可能要求改动。
 
 ## 提交规范
 
