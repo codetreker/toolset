@@ -96,14 +96,10 @@ type(scope): description (#issue)
 - **绝不能主 session 和 subagent 同时操作同一个仓库**
 - 完成后各自开 PR，不多个 subagent 抢同一个仓库
 
-## Claude Code 集成
+## Coding Agent 集成
 
-用 Claude Code 执行时，workdir 指向 worktree：
-
-```bash
-cd /workspace/<project>/.worktrees/<task-name>
-claude --permission-mode bypassPermissions --print '...'
-```
+用 coding agent（Claude Code / Codex）执行时，workdir 指向 worktree。
+调用方式见 `using-claude-code` / `using-codex` skill。
 
 **不要** `cd /workspace/<project>` 然后直接改文件。
 

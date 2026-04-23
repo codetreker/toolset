@@ -12,6 +12,7 @@ description: 技术设计文档流程。覆盖：调研（多 Claude Code 并行
 - 有明确的技术问题或需求（新模块、架构变更、存储选型等）
 - 问题复杂度值得写设计文档（5 分钟能搞定的不需要）
 - 已有项目频道和任务板
+- **遵循 git-workflow skill**：所有文件写操作在 `.worktrees/` 里进行，主目录只读
 
 ## 流程总览
 
@@ -72,27 +73,9 @@ description: 技术设计文档流程。覆盖：调研（多 Claude Code 并行
 
 基于调研结论，产出完整的技术设计文档。
 
-**写设计文档必须用 Claude Code**，不要用 subagent。
+**写设计文档用 coding agent**（Claude Code / Codex），调用方式见 `using-claude-code` / `using-codex` skill。
 
-**CC 写文档的正确用法**：
-```bash
-# ✅ 正确：--print 输出 + shell 重定向写文件
-cd <project> && claude --permission-mode bypassPermissions --print "<prompt>" > docs/design/xxx.md
-
-# ✅ 正确：让 CC 读代码后生成文档（提示词里要求读哪些文件）
-cd <project> && claude --permission-mode bypassPermissions --print "读取 src/routes/*.ts，然后写设计文档" > docs/design/xxx.md
-
-# ❌ 错误：--print 模式不能写文件，它只输出到 stdout
-cd <project> && claude --permission-mode bypassPermissions --print "写到 docs/xxx.md"  # 文件不会被创建！
-
-# ❌ 错误：交互模式在非 TTY 环境挂死
-cd <project> && claude --permission-mode bypassPermissions "写文档"  # 无 --print，需要 TTY
-
-# ❌ 错误：subagent 没有文件读写能力
-sessions_spawn(task="写设计文档")  # 写不出文件
-```
-
-**关键点**：`--print` 只输出文本，不能写文件。要写文件必须用 shell 重定向 `> file.md`。
+**注意**：`--print` 模式只输出文本，不能写文件。要写文件必须用 shell 重定向 `> file.md`，或者用 ACP 模式让 agent 直接写文件。
 
 ### 设计文档结构
 
@@ -136,6 +119,9 @@ sessions_spawn(task="写设计文档")  # 写不出文件
 
 ### 写作原则
 
+- **遵循 git-workflow**：先创建 worktree，在 worktree 里写文档，不在主目录写文件
+- **设计 ≠ PRD 换格式**：PRD 回答「测/做什么」，设计回答「怎么做」。如果设计文档只是把 PRD 的场景展开成表格，没有新增技术决策，那就是在浪费时间。设计必须包含：技术选型理由、实现方案（代码级别）、数据结构、依赖关系、mock/stub 策略、测试隔离方案等 PRD 里没有的内容。
+- **框架 + 具体用例缺一不可**：只有架构框架没有具体用例 = 空中楼阁。设计文档的每个模块必须展开到可执行粒度。方案设计要有：具体的 API 请求/响应示例、数据结构定义（字段+类型+约束）、核心函数签名、数据流走查（A 调 B → B 查 C → 返回 D）、配置示例。测试设计要有：具体的 test case（setup/action/assertion）、mock/stub 方案、隔离策略。开发拿到设计文档应该能直接写代码，不需要自己再设计细节。（B24 教训：v2 只抄 PRD，v3 只有框架，到 v4 才补上具体用例。）
 - **够用就行**：不是写论文，是写施工图。开发能看懂、能动手就够。
 - **备选方案必须写**：将来需求变了可以回头看当初为什么没选。
 - **测试策略不能空**：QA 需要这个来做验收。
@@ -157,12 +143,10 @@ sessions_spawn(task="写设计文档")  # 写不出文件
 
 ### Review 流程
 
-1. **派 2 个 Reviewer 并行 review**（CC + Codex，用 `exec background:true`）：
-   - Reviewer A（Claude Code）：`exec background:true command:"cd <project> && claude --permission-mode bypassPermissions --print '<review prompt A>'"`
-   - Reviewer B（Codex）：`exec background:true timeout:1800 command:"cd <project> && codex --yolo exec '<review prompt，结尾加：把 review 结果写到 /tmp/review-result.md>'"`，完成后 `read /tmp/review-result.md` 读取结果
-   - 用 `process poll` 等结果，两个并行不阻塞
-   - 注意：Codex 用 `codex --yolo exec` 非交互模式（跳过沙箱），不需要 pty；Claude Code 用 `--print` 纯文本输出
-   - **Timeout 至少 30 分钟**（`timeout:1800`），Codex review 需要读多个文件 + 分析，3 分钟不够
+1. **派 2 个 Reviewer 并行 review**（用不同的 coding agent，如 Claude Code + Codex）：
+   - 调用方式见 `using-claude-code` / `using-codex` skill
+   - **Timeout 至少 30 分钟**
+   - 两个并行不阻塞
 2. **收集 review 意见**（`process log` 读取输出）
 3. **按严重度分级**（见下方）
 4. **修订文档**
@@ -242,12 +226,14 @@ Review 要求：
 ## 反模式（不要做）
 
 - ❌ 调研只派 1 个 agent → 容易有盲区，至少 2 个并行
-- ❌ Review 只用一个工具 → CC + Codex 并行，不同模型视角互补
+- ❌ Review 只用一个工具 → Claude Code + Codex 并行，不同模型视角互补
 - ❌ 跳过 review 直接提交审批 → review 是质量保证，不是形式
 - ❌ Review 超过 3 轮还在改 → 说明方案有根本问题，升级决策
 - ❌ 设计文档只在聊天里讨论不落文件 → 口头设计 = 没有设计
 - ❌ 修了 P0 不重新 review → P0 修改可能引入新问题
 - ❌ Task Breakdown 写"实现功能 X" → 粒度不够，要拆到具体步骤
+- ❌ 设计文档只有框架没有具体用例 → 方案设计缺 API 示例/数据流走查/schema 定义，测试设计缺具体 test case，都算不合格
+- ❌ 设计文档 = PRD 场景列表 + 技术术语 → 设计必须包含 PRD 里没有的技术决策和实现细节
 
 ---
 

@@ -1,11 +1,12 @@
 ---
 name: code-review
-description: Code Review 标准流程。用 Claude Code（exec background）做 PR review 时，自动带上标准 checklist + PR 特定检查项。适用于：(1) 飞马给 coding agent 派 review 任务时，(2) review 设计文档对应的实现时，(3) PR review 流程，(4) 需要对照 spec 检查代码实现时。触发词：code review、PR review、review PR、review 代码、review 实现。
+description: Code Review 标准流程。用 coding agent（Claude Code / Codex）做 PR review 时，自动带上标准 checklist + PR 特定检查项。适用于：(1) 飞马给 coding agent 派 review 任务时，(2) review 设计文档对应的实现时，(3) PR review 流程，(4) 需要对照 spec 检查代码实现时。触发词：code review、PR review、review PR、review 代码、review 实现。
 ---
 
 # Code Review
 
-标准 Code Review 流程。通过 Claude Code 执行 review，自动带上 checklist，确保覆盖全面。
+标准 Code Review 流程。通过 coding agent 执行 review，自动带上 checklist，确保覆盖全面。
+调用方式见 `using-claude-code` / `using-codex` skill。
 
 ## 标准 Review Checklist
 
@@ -78,22 +79,7 @@ Review 结果按严重程度分级：
 
 ## 执行方式
 
-### 用 Claude Code 执行 Review
-
-```bash
-# 1. 准备 prompt（见下方模板）
-# 2. 用 exec background 跑 Claude Code
-exec background:true timeout:1800
-claude --print --permission-mode bypassPermissions \
-  -p "<review prompt>"
-# 3. process poll 等结果
-```
-
-关键参数：
-- `--print` — 非交互模式，直接输出结果
-- `--permission-mode bypassPermissions` — 跳过权限确认
-- `timeout:1800` — 至少 30 分钟超时
-- `background:true` — 不阻塞主 session
+用 coding agent（Claude Code 或 Codex）执行 review。调用参数和超时见 `using-claude-code` / `using-codex` skill。
 
 ### Prompt 模板
 
@@ -131,12 +117,17 @@ Review PR #{pr_number} on branch {branch_name} in repo {repo_path}.
 将 review 结果写到 {output_path} 文件。
 ```
 
-### 飞马使用流程
+### Review 态度
+
+- 通过 → 明确说 "LGTM" 或 "通过"
+- 不通过 → **具体指出问题**（哪个文件、哪一行、什么问题、建议怎么改）
+- 不要只说"有点问题"——要给开发足够信息去修
+
+### 使用流程
 
 1. 确定 PR 号和仓库路径
 2. 判断是否有对应设计文档，有则加入 prompt
 3. 根据 PR 内容添加额外检查项（`extra_checks`）
 4. 用模板组装 prompt
-5. `exec background:true` 跑 Claude Code
-6. `process poll` 等结果
-7. 读取输出文件，在频道发布 review 结论
+5. 用 coding agent 跑 review（调用方式见 `using-claude-code` / `using-codex` skill）
+6. 读取输出，在频道发布 review 结论
