@@ -13,16 +13,23 @@ description: >-
 **主目录（`/workspace/<project>/`）永远保持在 main/master 分支，只读。**
 **所有开发在 `.worktrees/<task>/` 里进行。**
 
+## ❗ 一任务一分支，全程不合并
+
+**一个任务从开始到结束只用一条分支。**
+
+- 任务开始（PRD/设计讨论阶段）就创建分支，分支名记入 BOARD.md
+- PRD、设计文档、代码实现、bug 修复、测试——全部在这条分支上 commit + push
+- **中间不合并到 main**：每完成一步可以 commit + push（保存进度），但 PR 不合并
+- **合并条件**：所有环节完成（QA 本地 test 环境验收通过 + 代码 review 通过）才合并
+- 合并后关闭 task，清理 worktree 和分支
+
 ## 分支命名
 
 | 类型 | 格式 | 示例 |
 |------|------|------|
-| 功能 | `feat/<描述>` | `feat/multilang-indexing` |
-| 修复 | `fix/<描述>` | `fix/defer-close-leak` |
-| 重构 | `refactor/<描述>` | `refactor/state-mgmt` |
-| 文档 | `docs/<描述>` | `docs/organize-tasks` |
-| 多步骤 | `feat/<id>-step<N>-<描述>` | `feat/hay002-step2-gse` |
-| 技术债 | `chore/<描述>` | `chore/test-coverage` |
+| 功能 | `feat/<task-id>` | `feat/b07-slash-commands` |
+| 修复 | `fix/<task-id>` | `fix/bug-020-auth` |
+| 技术债 | `chore/<task-id>` | `chore/b13-orm` |
 
 ## Worktree 流程
 
@@ -56,19 +63,21 @@ cd /workspace/<project>/.worktrees/<task-name>
 gh pr create --base main --head <branch-name> --title "..." --body "..."
 ```
 
-### 4. PR 合并后清理
+### 4. 任务完成后合并 + 清理
 
-**worktree 在 PR 合并后才删除**——开 PR 后可能还需要修改（review 反馈）。
+**合并条件**：QA 本地 test 环境验收通过 + 代码 review 通过。
 
 ```bash
-# PR 合并后才执行：
+# 所有环节通过后才执行：
+cd /workspace/<project>/.worktrees/<task-name>
+gh pr merge <pr-number> --squash
+
+# 清理：
 cd /workspace/<project>
 git worktree remove .worktrees/<task-name>
 git branch -d <branch-name>
 git pull origin main
 ```
-
-**不要在 push + 开 PR 后就删 worktree**——review 可能要求改动。
 
 ## 提交规范
 

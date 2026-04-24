@@ -26,29 +26,30 @@ description: 项目操作手册,覆盖:项目 memory 组织与初始化、sessio
   - 项目 README.md 只写项目概述和关键决策,任务状态统一看 BOARD.md
   - 频道消息只是通知,不是记录
 - **Owner** = 此刻球在谁手上,随状态流转变化
-- **所有任务必须有 Owner,无主任务不允许存在**
-- 任务完成、状态变更、子任务拆分--**第一时间更新任务板**,不是"回头再改"
+- **所有任务必须有 Owner，无主任务不允许存在**
+- **一任务一分支**：BOARD.md 有 Branch 列，任务开始时确定分支名，PRD/设计/开发/测试全程在同一分支，任务完成后才合并
+- 任务完成、状态变更、子任务拆分--**第一时间更新任务板**，不是"回头再改"
 
 ### BOARD.md 文件格式
 
-**一张表，状态列区分**（不分多个 section）：
+**一张表,状态列区分**(不分多个 section):
 
 ```markdown
 # {project} Task Board
 
-> **Owner** = 此刻球在谁手上，随状态流转变化。
-> Backlog/Ready→Team Lead，In Progress→Dev，In Review→Team Lead，验收→QA，Done→Team Lead。
+> **Owner** = 此刻球在谁手上,随状态流转变化。
+> Backlog/Ready→Team Lead,In Progress→Dev,In Review→Team Lead,验收→QA,Done→Team Lead。
 
 | ID | 任务 | 状态 | Owner | PR |
 |----|------|------|-------|----||
 | P1 | 权限系统 | Done | 飞马 | #4 |
-| P6 | Slash Commands | In Progress | 战马 | — |
-| BL-001 | E2E 加密 | Backlog | 飞马 | — |
+| P6 | Slash Commands | In Progress | 战马 | - |
+| BL-001 | E2E 加密 | Backlog | 飞马 | - |
 ```
 
-**规则**：
-- Backlog 项也在这张表里，不单独建 BACKLOG.md
-- BOARD.md 是任务状态的唯一 SOT，不在其他地方维护看板副本
+**规则**:
+- Backlog 项也在这张表里,不单独建 BACKLOG.md
+- BOARD.md 是任务状态的唯一 SOT,不在其他地方维护看板副本
 
 ### 状态流转
 
@@ -117,7 +118,7 @@ docs/tasks/
 ## Session 启动上下文
 
 1. 读 MEMORY.md + `memory/YYYY-MM-DD.md`(今天+昨天)
-2. 如果在项目频道:读 `memory/projects/{name}/README.md` + 最近 2 天的 daily notes（今天+昨天）
+2. 如果在项目频道:读 `memory/projects/{name}/README.md` + 最近 2 天的 daily notes(今天+昨天)
 3. 读最近频道消息
 
 ### 新项目 Memory 初始化
@@ -160,9 +161,9 @@ docs/tasks/
 
 ### README.md vs Daily Notes
 
-**README.md = 精华汇总**：项目概述 + 重要决策 + 里程碑 + 设计变更 + 经验教训。新人读完能快速了解项目现状和来龙去脉。
+**README.md = 精华汇总**:项目概述 + 重要决策 + 里程碑 + 设计变更 + 经验教训。新人读完能快速了解项目现状和来龙去脉。
 
-**Daily notes = 详细日志**：每天发生了什么，具体过程、上下文、谁做了什么。可以相对详细。
+**Daily notes = 详细日志**:每天发生了什么,具体过程、上下文、谁做了什么。可以相对详细。
 
 | 内容 | README.md | Daily notes |
 |--------|:---------:|:-----------:|
@@ -174,7 +175,7 @@ docs/tasks/
 | 任务状态变更、阻塞、bug | | ✅ |
 | 日常进度、对话 | | ❌ 不记 |
 
-简单说：README 记「什么是重要的」，daily notes 记「今天发生了什么」。
+简单说:README 记「什么是重要的」,daily notes 记「今天发生了什么」。
 
 ### 约束
 

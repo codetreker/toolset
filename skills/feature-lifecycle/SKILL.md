@@ -22,8 +22,9 @@ Feature 端到端开发流程。每个阶段有明确的入口条件、产出、
 
 ## 全流程遵循
 
-- **git-workflow**：所有文件写操作在 worktree 里，主目录只读
+- **git-workflow**：一任务一分支，PRD/设计/开发/测试全程在同一分支，任务完成后才合并
 - **project-ops**：任务板实时更新，文档放 `docs/tasks/{TASK-ID}/`
+- **任务开始 = 创建分支**：进入 Phase 2（PRD）时创建任务分支，分支名记入 BOARD.md
 
 ---
 
@@ -147,27 +148,27 @@ Feature 端到端开发流程。每个阶段有明确的入口条件、产出、
 **子 skill**：`git-workflow`
 
 **规则**：
+- ❗ **必须等所有环节完成才合并**：QA 本地 test 环境验收通过 + 架构师 review 通过
 - ❌ 禁止 `--admin` 跳过 review
+- ❌ 禁止讨论中的 PR 合并
 - ✅ 等 CI check 通过
-- ✅ 等架构师 + PM 两方 approve
 - ✅ squash merge
 
 **退出条件**：PR merged
 
 ---
 
-## Phase 7: 部署 Staging
+## Phase 7: 部署
 
 **负责人**：飞马
 
 **子 skill**：`devops-taskflow`
 
 **步骤**：
-1. 触发 deploy workflow（staging）
+1. 触发 deploy workflow（staging + prod）
 2. 确认容器重启拉了新镜像
-3. 在频道通知 QA
 
-**退出条件**：staging 运行新代码
+**退出条件**：prod 运行新代码
 
 ---
 
@@ -178,9 +179,10 @@ Feature 端到端开发流程。每个阶段有明确的入口条件、产出、
 **子 skill**：`project-acceptance`
 
 **步骤**：
-1. 按 PRD 验收标准逐条验证
-2. 浏览器 + 真机测试（有 UI 的功能）
-3. 通过 → 在频道确认；不通过 → 打回开发
+1. **在本地 test 环境基于任务分支验收**（合并前）
+2. 按 PRD 验收标准逐条验证
+3. 浏览器 + 真机测试（有 UI 的功能）
+4. 通过 → 允许合并；不通过 → 打回开发
 
 **退出条件**：QA 确认通过
 
