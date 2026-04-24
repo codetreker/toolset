@@ -20,12 +20,20 @@ description: >-
 
 | 任务类型 | 应该用的 skill | 本 skill 的角色 |
 |---------|--------------|---------------|
-| 写代码、review PR、重构 | `coding-agent` | 不介入——coding-agent 自己管 spawn 方式 |
+| 写代码、review PR、重构 | `using-claude-code` / `using-codex` | 不介入——直接 exec background 跑 coding agent，不需要套 subagent |
 | 架构设计、方案调研、技术选型 | `tech-designflow` | 不介入 |
-| 非 trivial 有副作用操作（改配置、建频道、部署等） | `task-dispatch`（调研→Review→执行） | 不介入——task-dispatch 自己管 subagent 流程 |
+| 非 trivial 有副作用操作（改配置、建频道、部署等） | `common-taskflow`（调研→Review→执行） | 不介入——common-taskflow 自己管流程 |
 | Code Review | `code-review` | 不介入 |
 | 项目启动/归档 | `project-init` | 不介入 |
 | 以上都不匹配的非 trivial 执行任务 | **本 skill** | 指导怎么 spawn subagent |
+
+### ⚠️ Coding agent ≠ subagent
+
+**跑 Claude Code / Codex 不需要套 subagent。** 它们自己就是异步执行的：
+
+- Interactive session → `exec background=true` 跑 coding agent，直接异步
+- 不要 spawn subagent 再在里面跑 coding agent——多一层嵌套没有任何好处
+- 只有当任务需要**思考 + 编排**（不只是跑 coding agent）时才 spawn subagent
 
 ### 本 skill 的角色定义
 
