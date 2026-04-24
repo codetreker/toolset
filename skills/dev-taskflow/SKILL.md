@@ -14,14 +14,24 @@ description: >-
 ## 流程概览
 
 ```
-Spec 文档 → [1] Task Breakdown → [2] Parallel Review → [3] Execute → [4] Code Review → [5] 提交 Review
-              (Claude Code)      (CC + Codex ×3轮)  (CC team)    (CC + Codex)     (架构师)
+Spec 文档 → [1] Task Breakdown → [2] Parallel Review → [3] Execute → [4] Code Review → [5] Push + 通知 Review
+              (Claude Code)      (CC + Codex ×3轮)  (CC team)    (CC + Codex)     (架构师+QA)
 ```
+
+## 分支规则（重要）
+
+**一个任务一条分支，从头到尾。**
+
+- 任务分支在任务创建时由飞马确定，记录在 BOARD.md
+- PRD、设计文档、代码实现、bug 修复全在这条分支上 commit+push
+- **中间不合并 main** — 每完成一步 commit+push，但 PR 不合
+- 只有整个任务走完所有环节（架构 review + QA 验收通过）才合并 PR
+- Dev 在任务分支对应的 worktree 里开发
 
 ## 前置条件
 
 - 有明确的 spec/设计文档（路径或内容）
-- 明确目标仓库和分支
+- 明确任务分支名（从 BOARD.md 获取）
 - Claude Code 和 Codex CLI 可用
 
 ## Step 1: Task Breakdown
@@ -126,13 +136,15 @@ Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...H
 
 **验收标准：** 两个 reviewer 都无 CRITICAL 问题。
 
-## Step 5: 提交架构 Review
+## Step 5: Push + 通知 Review
 
-1. `git push origin <branch>`
-2. `gh pr create` 开 PR（body 包含 spec 链接 + task breakdown 链接）
-3. 在项目频道 @ 架构师请求 review
+1. `git push origin <branch>`（任务分支，不是新分支）
+2. 如果 PR 还没开：`gh pr create`（body 包含 spec 链接 + task breakdown 链接）
+3. 在项目频道 @ 架构师 + @ QA 请求 review
 4. 盯 CI 直到绿灯
-5. 等架构师 approve
+5. 等架构 review + QA 本地验收**全部通过**后才合并
+
+**注意：Dev 不合并 PR。** 合并由飞马在所有 review 通过后操作。
 
 ## 执行要点
 

@@ -14,14 +14,23 @@ description: >-
 ## 流程概览
 
 ```
-Issue/Bug → [1] Reproduce & Root Cause → [2] Fix Plan → [3] Parallel Review → [4] Fix + Test → [5] Code Review → [6] 提交 Review
-              (Claude Code)               (Claude Code)  (CC + Codex ×2轮)  (CC)            (CC + Codex)     (架构师)
+Issue/Bug → [1] Reproduce & Root Cause → [2] Fix Plan → [3] Parallel Review → [4] Fix + Test → [5] Code Review → [6] Push + 通知 Review
+              (Claude Code)               (Claude Code)  (CC + Codex ×2轮)  (CC)            (CC + Codex)     (架构师+QA)
 ```
+
+## 分支规则（重要）
+
+**Bug fix 在任务分支上操作。**
+
+- 如果 bug 属于某个任务（任务还没合并），直接在任务分支上修
+- 如果是独立 bug，飞马会分配分支名（记在 BOARD.md）
+- 中间只 commit+push，不合并 main
+- 架构 review + QA 本地验收全部通过后才合并
 
 ## 前置条件
 
 - 有明确的 bug report / issue（包含复现步骤或错误描述）
-- 明确目标仓库和分支
+- 明确任务分支（从 BOARD.md 获取）
 - Claude Code 和 Codex CLI 可用
 
 ## Step 1: Reproduce & Root Cause Analysis
@@ -158,14 +167,16 @@ Code review: 对比 fix plan 和实际代码改动（git diff origin/main...HEAD
 
 **验收标准：** 两个 reviewer 都无 CRITICAL 问题。
 
-## Step 6: 提交架构 Review
+## Step 6: Push + 通知 Review
 
-1. `git push origin <branch>`
-2. `gh pr create`（body 包含 issue 链接 + root-cause.md 摘要 + fix-plan.md 摘要）
+1. `git push origin <branch>`（任务分支）
+2. 如果 PR 还没开：`gh pr create`（body 包含 issue 链接 + root-cause.md 摘要 + fix-plan.md 摘要）
 3. PR title 格式：`fix(scope): description (#issue)`
-4. 在项目频道 @ 架构师请求 review
+4. 在项目频道 @ 架构师 + @ QA 请求 review
 5. 盯 CI 直到绿灯
-6. 等架构师 approve
+6. 等架构 review + QA 本地验收**全部通过**后才合并
+
+**注意：Dev 不合并 PR。** 合并由飞马在所有 review 通过后操作。
 
 ## 执行要点
 
