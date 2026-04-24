@@ -13,7 +13,7 @@ description: "How to call Codex for any task: coding, refactoring, code review, 
 ## Interactive session 路径
 
 ```bash
-exec background=true workdir="/workspace/project-dir" timeout=1800 command="codex --yolo exec 'task description'"
+exec background=true workdir="/workspace/project-dir" timeout=7200 command="codex --yolo exec 'task description'"
 ```
 
 - `--yolo` — 跳过沙箱和审批（容器环境 bwrap 不可用）
@@ -26,7 +26,7 @@ exec background=true workdir="/workspace/project-dir" timeout=1800 command="code
 subagent 里 background exec 的回调会丢失，用同步 exec：
 
 ```bash
-exec workdir="/workspace/project-dir" timeout=1800 command="codex --yolo exec 'task description'"
+exec workdir="/workspace/project-dir" timeout=7200 command="codex --yolo exec 'task description'"
 ```
 
 - **不加 `background=true`**——subagent 结束后回调会丢失
@@ -35,14 +35,13 @@ exec workdir="/workspace/project-dir" timeout=1800 command="codex --yolo exec 't
 
 ## Timeout
 
-**最少 15 分钟起步。** 很多时候没法预估复杂度，给少了等于白跑。
+**统一 2 小时。** 不要猜复杂度，给够时间就对了。
 
-| Task type | Timeout |
-|-----------|---------|
-| 一般任务（默认） | 15 min (900s) |
-| 复杂编码 / 调研 / 分析 | 30 min (1800s) |
+```
+timeout = 7200
+```
 
-**A killed run is a wasted run. When in doubt, 30 min.**
+**A killed run is a wasted run.**
 
 ## Task description
 

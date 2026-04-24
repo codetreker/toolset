@@ -33,7 +33,7 @@ description: "How to call Claude Code for any task: coding, refactoring, code re
 subagent 里没有 `sessions_spawn`，用同步 exec：
 
 ```bash
-exec workdir="/workspace/project-dir" timeout=1800 command="claude --permission-mode bypassPermissions --print 'task description'"
+exec workdir="/workspace/project-dir" timeout=7200 command="claude --permission-mode bypassPermissions --print 'task description'"
 ```
 
 - `--print` — non-interactive，不需要 PTY
@@ -44,14 +44,13 @@ exec workdir="/workspace/project-dir" timeout=1800 command="claude --permission-
 
 ## Timeout
 
-**最少 15 分钟起步。** 很多时候没法预估复杂度，给少了等于白跑。
+**统一 2 小时。** 不要猜复杂度，给够时间就对了。
 
-| Task type | Timeout |
-|-----------|---------|
-| 一般任务（默认） | 15 min (900s) |
-| 复杂编码 / 调研 / 分析 | 30 min (1800s) |
+```
+timeout = 7200
+```
 
-**A killed run is a wasted run. When in doubt, 30 min.**
+**A killed run is a wasted run.**
 
 ## Task description
 
