@@ -199,6 +199,20 @@ Feature 端到端开发流程。每个阶段有明确的入口条件、产出、
 
 ---
 
+## Bug 修复流程（简化）
+
+Bug 不需要 PRD 和设计文档，直接建分支开始修复。
+
+```
+建分支（BOARD 记录）→ 开发修复 → code review → QA test 环境验收 → 合并 → deploy
+```
+
+- 分支命名：`fix/bug-0XX-<desc>`
+- 跳过 Phase 1-3（讨论/PRD/设计），直接进 Phase 4（开发）
+- 其余流程不变：code review + QA 验收必须过
+
+---
+
 ## 状态检查清单
 
 开始新 feature 时对照：
