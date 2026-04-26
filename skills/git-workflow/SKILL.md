@@ -136,3 +136,15 @@ type(scope): description (#issue)
 coverage/
 node_modules/
 ```
+
+### 定期清理 Worktree
+
+PR 合并后必须清理 worktree。如果发现残留 worktree：
+
+```bash
+cd /workspace/<project>
+git worktree prune          # 清理已删除目录的记录
+rm -rf .worktrees/<name>/   # 删除残留目录
+```
+
+教训（2026-04-26）：Borgee 项目积累了 17 个残留 worktree，占用磁盘且容易混淆。

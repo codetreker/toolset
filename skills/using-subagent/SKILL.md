@@ -44,7 +44,7 @@ Be specific and actionable:
 
 ```
 ❌ "看看这个项目"
-✅ "读 /workspace/collab/src/，分析 WebSocket 推送架构。输出：1) 消息流转路径 2) 关键文件 3) 瓶颈"
+✅ "读 /workspace/borgee/src/，分析 WebSocket 推送架构。输出：1) 消息流转路径 2) 关键文件 3) 瓶颈"
 ```
 
 ## Notes
