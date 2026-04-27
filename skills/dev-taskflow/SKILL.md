@@ -148,7 +148,7 @@ Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...H
 
 ## 执行要点
 
-- **调用方式见 `using-claude-code` / `using-codex` skill**
+- **调用方式见 `using-coding-agent` skill**
 - **并行 review 同时启动两个 agent**
 - **主 session 只做调度**，不自己写代码（delegate-not-do）
 - **每步完成后在频道汇报进度**

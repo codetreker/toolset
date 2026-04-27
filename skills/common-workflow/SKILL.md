@@ -14,7 +14,7 @@ description: 非 trivial 任务的标准执行流程：先调研拿方案，revi
 
 ## 谁来做调研
 
-用 coding agent（Claude Code / Codex）作为执行 agent。调用方式见 `using-claude-code` / `using-codex` skill。
+用 coding agent（Claude Code / Codex）作为执行 agent。调用方式见 `using-coding-agent` skill。
 
 ## 流程
 

@@ -108,7 +108,7 @@ type(scope): description (#issue)
 ## Coding Agent 集成
 
 用 coding agent（Claude Code / Codex）执行时，workdir 指向 worktree。
-调用方式见 `using-claude-code` / `using-codex` skill。
+调用方式见 `using-coding-agent` skill。
 
 **不要** `cd /workspace/<project>` 然后直接改文件。
 
