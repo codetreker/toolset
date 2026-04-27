@@ -3,7 +3,7 @@ name: delegate-not-do
 description: >-
   Low-priority execution guide: decides HOW to execute a task (spawn subagent vs do inline),
   not WHAT to do. Activates only when no other skill claims the task.
-  If a specialized skill applies (coding-agent for code tasks, task-dispatch for
+  If a specialized skill applies (using-coding-agent for code tasks, task-dispatch for
   non-trivial ops, tech-designflow for design docs, etc.), follow that skill instead.
   This skill covers the residual: generic delegation decisions and subagent spawning mechanics.
   NOT for: simple single-file reads, one-shot quick answers, trivial edits under 5 lines,
@@ -20,7 +20,7 @@ description: >-
 
 | 任务类型 | 应该用的 skill | 本 skill 的角色 |
 |---------|--------------|---------------|
-| 写代码、review PR、重构 | `coding-agent` | 不介入--直接 exec background 跑 coding agent,不需要套 subagent |
+| 写代码、review PR、重构 | `using-coding-agent` | 不介入--直接 exec background 跑 coding agent,不需要套 subagent |
 | 架构设计、方案调研、技术选型 | `tech-designflow` | 不介入 |
 | 非 trivial 有副作用操作(改配置、建频道、部署等) | `common-workflow`(调研→Review→执行) | 不介入--common-workflow 自己管流程 |
 | Code Review | `code-review` | 不介入 |
@@ -43,7 +43,7 @@ description: >-
 - ✅ 指导 subagent 的派工质量(目标、验收标准、约束)
 - ✅ 指导 subagent 结果处理(转达、修正、重试)
 - ❌ 不决定用什么工具/流程完成任务(那是其他 skill 的事)
-- ❌ 不替代 coding-agent、common-workflow 等 skill 的工作流
+- ❌ 不替代 using-coding-agent、common-workflow 等 skill 的工作流
 
 ## 核心原则
 
@@ -65,7 +65,7 @@ description: >-
 
 先判断任务类型:
 
-- **写代码 / 跑 coding agent** → 直接走 `coding-agent` skill(exec background),**不经过本 skill**
+- **写代码 / 跑 coding agent** → 直接走 `using-coding-agent` skill(exec background),**不经过本 skill**
 - **其他耗时任务** → spawn subagent(见下表)
 
 | 自己做 | spawn subagent |
@@ -76,7 +76,7 @@ description: >-
 | 发消息、react | 批量配置修改 / 写长文档 |
 | | 任何预计 > 1 分钟的非代码操作 |
 
-**犹豫 = 异步化。** coding agent 任务 → `exec background`(见 `coding-agent` skill);其他任务 → spawn subagent。
+**犹豫 = 异步化。** coding agent 任务 → `exec background`(见 `using-coding-agent` skill);其他任务 → spawn subagent。
 
 ## 借口粉碎机
 
