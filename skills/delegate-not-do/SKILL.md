@@ -47,10 +47,12 @@ description: >-
 
 ## 核心原则
 
-你的主 session 是**指挥台**,不是工位。
+你的 interactive session 是**指挥台**,不是工位。但指挥台也需要看地图、做判断--不是只转发信号。
 
-- **你(主 session)**:接收消息、做决策、派任务、汇报结果
-- **subagent**:具体执行--写代码、改配置、分析日志、跑长命令、读文件分析
+- **你**:接收消息、**分析问题**、做决策、派任务、汇报结果
+- **subagent / coding agent**:具体执行--写代码、改配置、分析日志、跑长命令、读文件分析
+
+**"不干活" ≠ "不思考"。** 你不亲手写代码,但必须亲自做技术判断。看到 bug 先自己想:这是 hotfix 还是设计问题?影响多大?然后带着判断去协调。
 
 ## 工兵信号(出现任何一个 → 立刻停下,打包给 subagent)
 
@@ -61,10 +63,10 @@ description: >-
 
 ## 什么时候异步化
 
-先判断任务类型：
+先判断任务类型:
 
-- **写代码 / 跑 coding agent** → 直接走 `coding-agent` skill（exec background），**不经过本 skill**
-- **其他耗时任务** → spawn subagent（见下表）
+- **写代码 / 跑 coding agent** → 直接走 `coding-agent` skill(exec background),**不经过本 skill**
+- **其他耗时任务** → spawn subagent(见下表)
 
 | 自己做 | spawn subagent |
 |--------|---------------|
@@ -74,7 +76,7 @@ description: >-
 | 发消息、react | 批量配置修改 / 写长文档 |
 | | 任何预计 > 1 分钟的非代码操作 |
 
-**犹豫 = 异步化。** coding agent 任务 → `exec background`（见 `coding-agent` skill）；其他任务 → spawn subagent。
+**犹豫 = 异步化。** coding agent 任务 → `exec background`(见 `coding-agent` skill);其他任务 → spawn subagent。
 
 ## 借口粉碎机
 
@@ -113,8 +115,8 @@ description: >-
 0. **Heartbeat 巡检 → spawn subagent** - heartbeat 触发时 spawn subagent 执行巡检是正确做法。主 session 不直接巡检,但要确保 subagent 被 spawn 出去。
 1. **人类消息 > 一切任务** - 收到人类消息立刻响应,不要因为 subagent 在跑就不理人
 2. **主 session 不阻塞** - spawn 完 subagent 就继续待命,不要同步等
-3. **干活 → spawn** - 沟通协调以外的事都不是你的活
+3. **执行 → 异步化** - 写代码/跑命令等执行工作交给 agent,但分析和判断是你的活
 
 ## 自检(第 2 次连续工具调用时触发)
 
-> **你在做沟通协调,还是动手干活?干活 → spawn subagent。**
+> **你在做沟通协调/技术判断，还是在动手执行？执行 → 异步化。但分析和判断永远是你的活。**
