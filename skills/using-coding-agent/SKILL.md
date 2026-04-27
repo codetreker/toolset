@@ -1,5 +1,5 @@
 ---
-name: coding-agent
+name: using-coding-agent
 description: "How to call coding agents (Claude Code, Codex) via exec. Use when spawning a coding agent for any task: coding, refactoring, code review, research, root cause analysis, investigation, or PR review. Covers exec parameters per agent, interactive vs subagent paths, timeout, result handling, progress updates, and workdir setup. Trigger: about to call Claude Code or Codex, need to set timeout, need to run coding agent."
 ---
 
