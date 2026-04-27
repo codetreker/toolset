@@ -38,8 +38,7 @@ Spec 文档 → [1] Task Breakdown → [2] Parallel Review → [3] Execute → [
 
 用 Claude Code 把 spec 分解为可执行的 task list。
 
-```bash
-cd <project-dir> && claude --permission-mode bypassPermissions --print "
+```
 读 <spec-path>，分解为可执行的 task list。
 
 要求：
@@ -62,9 +61,8 @@ Claude Code 和 Codex **并行** review task list，聚焦：
 
 **并行启动两个 review（用 `exec background:true`，各自拿 sessionId 后 `process poll` 等结果）：**
 
-```bash
+```
 # Review 1: Claude Code
-cd <project-dir> && claude --permission-mode bypassPermissions --print "
 Review <task-breakdown.md>，对照 <spec-path>。
 聚焦：遗漏需求、粒度、依赖、技术风险。
 只输出需要修改的 CRITICAL/HIGH 问题，不要废话。
@@ -72,7 +70,6 @@ Review <task-breakdown.md>，对照 <spec-path>。
 "
 
 # Review 2: Codex（同时启动）
-cd <project-dir> && codex --yolo exec "
 Review <task-breakdown.md>，对照 <spec-path>。
 聚焦：遗漏需求、粒度、依赖、技术风险。
 只输出需要修改的 CRITICAL/HIGH 问题，不要废话。
@@ -92,8 +89,7 @@ Review <task-breakdown.md>，对照 <spec-path>。
 
 用 Claude Code 按 task list 顺序执行编码。
 
-```bash
-cd <project-dir> && claude --permission-mode bypassPermissions --print "
+```
 按 <task-breakdown.md> 顺序执行所有 task。
 
 约束：
@@ -113,9 +109,8 @@ cd <project-dir> && claude --permission-mode bypassPermissions --print "
 
 编码完成后，并行跑两个 code review，聚焦 **spec 一致性**：
 
-```bash
+```
 # Review 1: Claude Code
-cd <project-dir> && claude --permission-mode bypassPermissions --print "
 Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...HEAD）。
 聚焦：
 1. spec 中的每个需求是否都实现了
@@ -125,7 +120,6 @@ Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...H
 "
 
 # Review 2: Codex（同时启动）
-cd <project-dir> && codex --yolo exec "
 Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...HEAD）。
 聚焦：spec 一致性、遗漏实现、偏离设计。
 只输出 CRITICAL/HIGH 问题。
@@ -153,4 +147,4 @@ Code review: 对比 <spec-path> 和实际代码改动（git diff origin/main...H
 - **主 session 只做调度**，不自己写代码（delegate-not-do）
 - **每步完成后在频道汇报进度**
 - **遇到 OOM/超时**：加大内存/timeout 重试，不要放弃
-- **Timeout 至少 15 分钟，复杂任务 30 分钟**
+- **Timeout 统一 2 小时（见 `using-coding-agent` skill）**
